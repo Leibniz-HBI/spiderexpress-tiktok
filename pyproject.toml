@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "spiderexpress_tiktok"
+version = "0.1.0"
+description = "TikTok plugin for spiderexpress"
+authors = ["Philipp Kessling"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "*"
+loguru = "*"
+PyYAML = "*"
+researchtikpy = {git = "https://github.com/pekasen/ResearchTikPy"}
+spiderexpress = {git = "https://github.com/Leibniz-HBI/spiderexpress.git", rev = "90-featbackend-simplify-database-tables-with-json-columns"}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-cov = "*"
+black = "*"
+coverage = "*"
+pdoc3 = "*"
+pre-commit = "*"
+isort = "*"
+pylint = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins."spiderexpress.connectors"]
+"tiktok/followers" = "spiderexpress_tiktok.spiderexpress_tiktok:followers_entrypoint"
+"tiktok/followings" = "spiderexpress_tiktok.spiderexpress_tiktok:followings_entrypoint"
+
+[tool.pytest.ini_options]
+addopts = "--cov-report html:tests/coverage --cov=spiderexpress_tiktok --capture=sys"
+
+[tool.isort]
+profile = "black"
+
+[tool.poetry.scripts]
