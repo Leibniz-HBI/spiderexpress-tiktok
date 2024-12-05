@@ -20,6 +20,25 @@ _call_counter_ = {
     "users_info": 0,
 }
 
+_access_token_ = None
+
+
+def _get_access_token_(key: str, secret: str) -> AccessToken:
+    """This function returns the access token for the TikTok API.
+    
+    Returns:
+        AccessToken: The access token for the TikTok API.
+    """
+    global _access_token_
+    if _access_token_ is None:
+        logger.info("Requesting new access token.")
+        _access_token_ = AccessToken(
+            client_key=key,
+            client_secret=secret,
+        )
+    logger.info("Using access token: {_access_token_}.")
+    return _access_token_
+
 
 def _reset_date_() -> datetime.datetime:
     """This function returns the next reset time for the TikTok API.
@@ -27,16 +46,12 @@ def _reset_date_() -> datetime.datetime:
     Returns:
         datetime.datetime: The next reset time for the TikTok API.
     """
-    now = datetime.datetime.now()
-    # Next reset time is 12am UTC 
-    if now.hour <= 12:
-        return datetime.datetime(
-            year=now.year, month=now.month, day=now.day, hour=0, minute=0, second=0
-        ) + datetime.timedelta(days=1)
-    else:
-        return datetime.datetime(
-            year=now.year, month=now.month, day=now.day, hour=0, minute=0, second=0
-        )
+    now = datetime.datetime.now(tz=datetime.UTC)
+    noon = now.replace(hour=12, minute=0, second=0, microsecond=0)
+    # Next reset time is 12am UTC time
+    if now >= noon:  # If it is past 12am, then the next reset time is tomorrow
+        return noon + datetime.timedelta(days=1)
+    return noon
     
 
 def _get_reset_seconds_(reset_date: datetime.datetime) -> int:
@@ -95,7 +110,7 @@ def _users_info_(handle: str, token: AccessToken) -> pd.DataFrame:
 @guard_end_point("followers")
 def _followers_(handles: List[str], configuration: Dict) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """This is a SpiderExpress plugin entrypoint for fetching followers"""
-    token = AccessToken(
+    token = _get_access_token_(
         configuration["client_key"],
         configuration["client_secret"],
     )
@@ -118,7 +133,7 @@ def _followers_(handles: List[str], configuration: Dict) -> Tuple[pd.DataFrame, 
 @guard_end_point("followings")
 def _followings_(handles: List[str], configuration: Dict) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """This is a SpiderExpress plugin entrypoint for fetching followings"""
-    token = AccessToken(
+    token = _get_access_token_(
         configuration["client_key"],
         configuration["client_secret"],
     )
