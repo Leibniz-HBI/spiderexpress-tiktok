@@ -53,7 +53,7 @@ def _reset_date_() -> datetime.datetime:
     Returns:
         datetime.datetime: The next reset time for the TikTok API.
     """
-    now = datetime.datetime.now(tz=datetime.UTC)
+    now = datetime.datetime.now(tz=datetime.timezone.utc)
     noon = now.replace(hour=12, minute=0, second=0, microsecond=0)
     # Next reset time is 12am UTC time
     if now >= noon:  # If it is past 12am, then the next reset time is tomorrow
@@ -67,7 +67,7 @@ def _get_reset_seconds_(reset_date: datetime.datetime) -> int:
     Returns:
         int: The number of seconds until the next reset time for the TikTok API.
     """
-    return (reset_date - datetime.datetime.now(datetime.UTC)).total_seconds()
+    return (reset_date - datetime.datetime.now(datetime.timezone.utc)).total_seconds()
 
 
 def guard_end_point(endpoint: str):
