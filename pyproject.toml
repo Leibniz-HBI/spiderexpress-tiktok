@@ -11,7 +11,7 @@ click = "*"
 loguru = "*"
 PyYAML = "*"
 researchtikpy = {git = "https://github.com/pekasen/ResearchTikPy"}
-spiderexpress = {git = "https://github.com/Leibniz-HBI/spiderexpress.git", rev = "90-featbackend-simplify-database-tables-with-json-columns"}
+spiderexpress = {git = "https://github.com/Leibniz-HBI/spiderexpress.git", rev = "97-fix-sqlite-db-locked-and-crashes"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
